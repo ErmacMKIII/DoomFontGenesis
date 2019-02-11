@@ -1,0 +1,21 @@
+For designation and proper use -  
+name your font file accordingly. 
+If you use Byte Map Font, examples are:
+<html><b>"confont.bmf"</b> is for console font,</html>
+<html><b>"smallfnt.bmf"</b> is for small font for chat,</html>
+<html><b>"dbigfont.bmf"</b> is for big Doom font found in menus.</html>
+
+Recommended is to choose spacing greater than zero. 
+
+When uncertain "6-bit RGB" and "8-bit RGB" color palettes
+are good choice for all games overall.
+
+Game you make font for (Doom, Heretic or Hexen) should match
+palette you've chosen.
+
+Choosing "None" for palette and going for many colors in the font
+may result in bad font which could have palette overflow.
+Use designated game palette instead.
+
+<html><b>Keep in mind that only small set of fonts can be synthesized and</b></html> 
+<html><b>even smaller subset will look good in the game.</b></html>
