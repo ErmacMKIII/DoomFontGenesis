@@ -1100,8 +1100,9 @@ public class GUI extends javax.swing.JFrame {
                         "File Open",
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
+                String errorMsg = (this.guiLogic.getFontLoad() != null) ? this.guiLogic.getFontLoad().getErrorMsg() : "Error - Invalid header!";
                 JOptionPane.showMessageDialog(this,
-                        "File open resulted in error!",
+                        "File open resulted in error!" + "\n" + errorMsg,
                         "File Open",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -1405,13 +1406,14 @@ public class GUI extends javax.swing.JFrame {
         URL icon_url = getClass().getResource(RESOURCES_DIR + LICENSE_LOGO_FILE_NAME);
         if (icon_url != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<html><b>VERSION 1.7 - STONEWALL (PUBLIC BUILD reviewed on 2019-02-11 at 02:00).</b></html>\n");
+            sb.append("<html><b>VERSION 1.7.1 - STONEWALL (PUBLIC BUILD reviewed on 2019-02-12 at 15:30).</b></html>\n");
             sb.append("<html><b>This software is free software, </b></html>\n");
             sb.append("<html><b>licensed under GNU General Public License (GPL).</b></html>\n");
             sb.append("\n");
             sb.append("Changelog:\n");
             sb.append("\t- Mandatory unused color is set to rose one.\n");
             sb.append("\t- User can now view and create lump fonts (Big and Console ones) for Doom.\n");
+            sb.append("\t- Fixed bug when saving BMF font for the loaded BMF font (duplicating).\n");
             sb.append("\n");
             sb.append("Objective:\n");
             sb.append("\tThe purpose of this program is viewing and creating Byte Map and Lump Fonts for \n");

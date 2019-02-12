@@ -97,7 +97,7 @@ public class BMF extends DoomFont {
             // -- READ NUMBER OF RGB ENTRIES (P)            
             int p = buffer[16] & 0xFF; // number of RGB entries (P)                                      
             // -- READ FONT PALETTE              
-            int pos = 17; // is position
+            this.pos = 17; // is position
             // -- FONT PALETTE (RGB bytes, max=63)
             this.palette.add(transparentColor);
             for (int i = 0; i < p; i++) {
@@ -107,7 +107,8 @@ public class BMF extends DoomFont {
                 Color color = new Color(
                         Math.min(red << 2 | red >> 4, 0xFF),
                         Math.min(green << 2 | green >> 4, 0xFF),
-                        Math.min(blue << 2 | blue >> 4, 0xFF));
+                        Math.min(blue << 2 | blue >> 4, 0xFF)
+                );
                 if (!color.equals(transparentColor) && !this.palette.contains(color) && this.palette.size() < PAL_MAX_SIZE) {
                     this.palette.add(color);
                 }
@@ -120,11 +121,11 @@ public class BMF extends DoomFont {
             // -- READ INFO LENGTH                    
             int l = buffer[pos++] & 0xFF;
             // -- READ INFO STRING            
-            char[] info = new char[l];
+            char[] infoStr = new char[l];
             for (int i = 0; i < l; i++) {
-                info[i] = (char) buffer[pos++];
+                infoStr[i] = (char) buffer[pos++];
             }
-            this.info = String.valueOf(info);
+            this.info = String.valueOf(infoStr);
             // -- READING NUMBER OF CHARACTERS IN THE FONT                                                     
             int numchars = ((buffer[pos + 1] & 0xFF) << 8) | (buffer[pos] & 0xFF);
             pos += 2;

@@ -326,6 +326,23 @@ public class GUILogic {
                 graphicsRender.translate(cb.getWidth() + spacing, 0);
             }
 
+            // if antialiasing is selected multiply color with it's alpha
+            if (antialiasing) {
+                for (int px = 0; px < imageRender.getWidth(); px++) {
+                    for (int py = 0; py < imageRender.getHeight(); py++) {
+                        Color srcCol = new Color(imageRender.getRGB(px, py), true);
+                        if (srcCol.getAlpha() > 0) { // this if is in order to not ruin the borders around the chars
+                            Color dstCol = new Color( // constructor with the three floats is called
+                                    (srcCol.getAlpha() / 255.0f) * (srcCol.getRed() / 255.0f),
+                                    (srcCol.getAlpha() / 255.0f) * (srcCol.getGreen() / 255.0f),
+                                    (srcCol.getAlpha() / 255.0f) * (srcCol.getBlue() / 255.0f)
+                            );
+                            imageRender.setRGB(px, py, dstCol.getRGB());
+                        }
+                    }
+                }
+            }
+
             // if outline is selected;                                                
             if (outlineWidth > 0) {
                 // Copy of raster of unaltered image is needed!!

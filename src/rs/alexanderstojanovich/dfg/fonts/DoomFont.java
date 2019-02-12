@@ -120,7 +120,8 @@ public class DoomFont {
 
     //--------------------------------------------------------------------------
     // B - METHODS
-    //--------------------------------------------------------------------------           
+    //--------------------------------------------------------------------------
+    // search all the characters in the font and returns one which holds the value same as the key
     protected DoomFontChar giveChar(char key) {
         for (DoomFontChar ch : this.chars) {
             if (ch != null && ch.getC() == key) {
@@ -130,6 +131,7 @@ public class DoomFont {
         return null;
     }
 
+    // generates image displaying all the characters in the font
     public BufferedImage generateImage(boolean transparency) {
         BufferedImage image = null;
         image = new BufferedImage(this.totalwidth + 2, this.maxheight + 2,
@@ -163,6 +165,7 @@ public class DoomFont {
         return image;
     }
 
+    // generaters image displaying text, it allows typing in the font
     public BufferedImage generateImage(boolean transparency, String text) {
         // 1. initializing
         BufferedImage image = null;
@@ -211,11 +214,12 @@ public class DoomFont {
         return image;
     }
 
+    // saves the font to the file
     public boolean saveToFile(File file) {
         boolean success = false;
-        if (file.exists()) {
+        if (file.exists()) { // if file exists delete it
             file.delete();
-        }
+        }   // if someone chosen to save file without extension add proper extension
         if (!file.getName().contains(".lmp") && !file.getName().contains(".bmf")) {
             switch (this.type) {
                 case "FON1":
@@ -232,7 +236,7 @@ public class DoomFont {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file);
-            fos.write(this.buffer, 0, this.pos);
+            fos.write(this.buffer, 0, this.pos); // write buffer to the targeted file
             success = true;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DoomFont.class.getName()).log(Level.SEVERE, null, ex);
@@ -253,6 +257,7 @@ public class DoomFont {
     //--------------------------------------------------------------------------
     // C - STATIC METHODS
     //--------------------------------------------------------------------------
+    // polymorphic way of loading the file, it returns font based on the it's header, that's why it's static
     public static DoomFont loadFromFile(File file) {
         DoomFont doomFont = null;
         byte[] buffer = new byte[65536]; // 64K buffer oh-yeah!
@@ -278,11 +283,14 @@ public class DoomFont {
                 // POLYMORPHIC WAY OF MAKING FONTS
                 // depending on the header {FON1, FON2 or BMF} 
                 // it returns one font in that set or it stays null
-                if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '1') { // The characters 'F', 'O', 'N', and '1'.
+                if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '1') {
+                    // The characters 'F', 'O', 'N', and '1'.
                     doomFont = new ConsoleFont(buffer, 0);
-                } else if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '2') { // The characters 'F', 'O', 'N', and '2'.
+                } else if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '2') {
+                    // The characters 'F', 'O', 'N', and '2'.
                     doomFont = new BigFont(buffer, 0);
-                } else if (buffer[0] == (byte) 0xE1 && buffer[1] == (byte) 0xE6 && buffer[2] == (byte) 0xD5 && buffer[3] == (byte) 0x1A) { // BMF Magic Header
+                } else if (buffer[0] == (byte) 0xE1 && buffer[1] == (byte) 0xE6 && buffer[2] == (byte) 0xD5 && buffer[3] == (byte) 0x1A) {
+                    // BMF Magic Header
                     doomFont = new BMF(buffer, 0);
                 }
             }

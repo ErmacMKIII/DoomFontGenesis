@@ -48,7 +48,7 @@ public class ColorSample {
     //--------------------------------------------------------------------------
     // B - ESSENTIAL STATIC METHOD
     //--------------------------------------------------------------------------    
-    // B1 - Get Sample from all of adjacent pixels on given offset, but against the given color
+    // B1 - Get Sample from all of adjacent pixels on given the offset
     public static ColorSample getSample(WritableRaster wr, boolean indexed, int px, int py, int offset) {
         // INPUT LOGIC          
         int len = 2 * offset + 1;
