@@ -53,6 +53,7 @@ public class ConsoleFont extends DoomFont {
     //--------------------------------------------------------------------------
     // B - METHODS
     //-------------------------------------------------------------------------- 
+    // priv method for the constructor A1 (Console Font) -> Buffer to Font
     private void loadFont() {
         if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '1') { // The characters 'F', 'O', 'N', and '1'.
             // -- READING FIRST DATA AFTER THE HEADER                                           
@@ -129,6 +130,7 @@ public class ConsoleFont extends DoomFont {
         }
     }
 
+    // priv method for the constructor A2 (Console Font) -> Font to Buffer
     private void unloadFont() {
         // -- WRITING HEADER OF THE BIG FONT
         this.buffer[0] = 'F'; // The characters 'F', 'O', 'N', and '1'.   

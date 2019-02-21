@@ -125,6 +125,7 @@ public class Palette {
         loaded = true;
     }
 
+    // asynch reset - returns palette into initial state
     public static void reset() {
         loaded = false;
         colors = null;

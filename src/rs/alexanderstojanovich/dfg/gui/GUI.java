@@ -33,11 +33,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import rs.alexanderstojanovich.dfg.fonts.BMF;
 
@@ -54,14 +57,6 @@ public class GUI extends javax.swing.JFrame {
 
     // Load font or derive font from existing one - the mode
     private Operation mode = Operation.LOAD;
-
-    // State of the threads
-    private enum State {
-        WORK, IDLE
-    };
-
-    // The threads (refresh one and the palette one can be in one of the states)
-    private State refreshThrState = State.WORK, palThrState = State.WORK;
 
     // Is the reset triggered by the GUI Thread
     private boolean resetTriggered = false;
@@ -157,6 +152,7 @@ public class GUI extends javax.swing.JFrame {
         textLastCharValue = new javax.swing.JLabel();
         textSpacingLabel = new javax.swing.JLabel();
         textSpacing = new javax.swing.JSpinner();
+        textSupportedIcon = new javax.swing.JLabel();
         effectsPanel = new javax.swing.JPanel();
         fgLabel = new javax.swing.JLabel();
         fgButton = new javax.swing.JButton();
@@ -172,8 +168,12 @@ public class GUI extends javax.swing.JFrame {
         palLabel = new javax.swing.JLabel();
         paletteSelector = new javax.swing.JComboBox<>();
         palettePreview = new javax.swing.JPanel();
-        imageSP = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         imagePreview = new javax.swing.JLabel();
+        imageZoomLabel = new javax.swing.JLabel();
+        imageZoomSlider = new javax.swing.JSlider();
+        imageZoomPercentLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         fileOpen = new javax.swing.JMenuItem();
@@ -192,7 +192,7 @@ public class GUI extends javax.swing.JFrame {
         fileSaver.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Doom Font Genesis - STONEWALL");
+        setTitle("Doom Font Genesis - TITANIUM");
         setName("DoomFontGenesis"); // NOI18N
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 600));
@@ -259,7 +259,7 @@ public class GUI extends javax.swing.JFrame {
 
         fontModePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mode", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
-        radioButtonCreate.setText("Create from prexisting font");
+        radioButtonCreate.setText("Create from preexisting font");
         radioButtonCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonCreateActionPerformed(evt);
@@ -325,7 +325,7 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(fontFormatPanelLayout.createSequentialGroup()
                         .addComponent(fontLoadFormatLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fontLoadFormatTextFld, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
+                        .addComponent(fontLoadFormatTextFld, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
                     .addGroup(fontFormatPanelLayout.createSequentialGroup()
                         .addComponent(fontDerFormatLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -432,10 +432,10 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         textSample.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 textSampleInputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         textSampleSP.setViewportView(textSample);
@@ -473,6 +473,8 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        textSupportedIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/rs/alexanderstojanovich/dfg/res/dfg_supported.png"))); // NOI18N
+
         javax.swing.GroupLayout textPanelLayout = new javax.swing.GroupLayout(textPanel);
         textPanel.setLayout(textPanelLayout);
         textPanelLayout.setHorizontalGroup(
@@ -492,6 +494,8 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(textLastCharValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFirstCharValue, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textSupportedIcon)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(textSampleSP, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
         );
@@ -504,21 +508,24 @@ public class GUI extends javax.swing.JFrame {
             textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, textPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(firstCharSemicolon)
-                        .addComponent(textFirstChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(textFirstCharValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textLastCharValue, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lastCharSemicolon)
-                        .addComponent(textLastChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textSpacingLabel)
-                    .addComponent(textSpacing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(textPanelLayout.createSequentialGroup()
+                        .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(firstCharSemicolon)
+                                .addComponent(textFirstChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textFirstCharValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textLastCharValue, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lastCharSemicolon)
+                                .addComponent(textLastChar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(textSpacingLabel)
+                            .addComponent(textSpacing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(textSupportedIcon))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textSampleSP, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
                 .addContainerGap())
@@ -679,12 +686,56 @@ public class GUI extends javax.swing.JFrame {
 
         getContentPane().add(effectsPanel);
 
-        imageSP.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Image", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Image", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
         imagePreview.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        imageSP.setViewportView(imagePreview);
+        jScrollPane1.setViewportView(imagePreview);
 
-        getContentPane().add(imageSP);
+        imageZoomLabel.setText("Zoom:");
+
+        imageZoomSlider.setMajorTickSpacing(50);
+        imageZoomSlider.setMaximum(400);
+        imageZoomSlider.setMinimum(10);
+        imageZoomSlider.setMinorTickSpacing(10);
+        imageZoomSlider.setValue(100);
+        imageZoomSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                imageZoomSliderStateChanged(evt);
+            }
+        });
+
+        imageZoomPercentLabel.setText("100%");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(imageZoomLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(imageZoomSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(imageZoomPercentLabel)
+                        .addGap(0, 6, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(imageZoomSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(imageZoomLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imageZoomPercentLabel, javax.swing.GroupLayout.Alignment.LEADING))
+                .addContainerGap())
+        );
+
+        getContentPane().add(jPanel1);
 
         fileMenu.setText("File");
 
@@ -786,6 +837,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void textFirstCharStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_textFirstCharStateChanged
         // TODO add your handling code here:
+        updateSpinners();
         activateRefresh();
     }//GEN-LAST:event_textFirstCharStateChanged
 
@@ -796,6 +848,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void textLastCharStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_textLastCharStateChanged
         // TODO add your handling code here:
+        updateSpinners();
         activateRefresh();
     }//GEN-LAST:event_textLastCharStateChanged
 
@@ -805,34 +858,43 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_textSampleCaretUpdate
 
     private void fontSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSelectorActionPerformed
-        // TODO add your handling code here:        
+        // TODO add your handling code here:
+        updateFont();
         activateRefresh();
     }//GEN-LAST:event_fontSelectorActionPerformed
 
     private void fontBoldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontBoldActionPerformed
         // TODO add your handling code here:
+        updateFont();
         activateRefresh();
     }//GEN-LAST:event_fontBoldActionPerformed
 
     private void fontSizeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fontSizeStateChanged
         // TODO add your handling code here:
+        updateFont();
         activateRefresh();
     }//GEN-LAST:event_fontSizeStateChanged
 
     private void fontItalicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontItalicActionPerformed
         // TODO add your handling code here:
+        updateFont();
         activateRefresh();
     }//GEN-LAST:event_fontItalicActionPerformed
 
     private void radioButtonCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonCreateActionPerformed
         // TODO add your handling code here:        
         this.mode = Operation.DERIVE;
-        activatePalette();
+        this.imageZoomSlider.setValue(100);
+        updateColors(); // update the colors in the Effects section
+        updateFont(); // update the font from the Font section
+        updateSpinners(); // update the values from character range in the Text section
+        activatePalette(); // wake up the thread which refreshes the palette and calls "activate Refresh" thread
     }//GEN-LAST:event_radioButtonCreateActionPerformed
 
     private void radioButtonLoadPreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonLoadPreActionPerformed
         // TODO add your handling code here:        
         this.mode = Operation.LOAD;
+        this.imageZoomSlider.setValue(100);
         activatePalette();
     }//GEN-LAST:event_radioButtonLoadPreActionPerformed
 
@@ -885,6 +947,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void textSpacingStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_textSpacingStateChanged
         // TODO add your handling code here:
+        updateSpinners();
         activateRefresh();
     }//GEN-LAST:event_textSpacingStateChanged
 
@@ -936,8 +999,17 @@ public class GUI extends javax.swing.JFrame {
 
     private void fontDerFormatSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontDerFormatSelectorActionPerformed
         // TODO add your handling code here:
-        activateRefresh();
+        updateFormat(); // update the format in the Font section
+        updateFont();   // update the font from the Font section
+        updateSpinners();  // update the values from character range in the Text section
+        activateRefresh(); // wake up the thread which refreshes the palette and calls "activate Refresh" thread
     }//GEN-LAST:event_fontDerFormatSelectorActionPerformed
+
+    private void imageZoomSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_imageZoomSliderStateChanged
+        // TODO add your handling code here:
+        this.imageZoomPercentLabel.setText(String.valueOf(this.imageZoomSlider.getValue()) + "%");
+        activateRefresh();
+    }//GEN-LAST:event_imageZoomSliderStateChanged
 
     /**
      * @param args the command line arguments
@@ -1007,9 +1079,9 @@ public class GUI extends javax.swing.JFrame {
         ArrayList<String> names = new ArrayList<String>();
         GraphicsEnvironment graphEnvi = GraphicsEnvironment.getLocalGraphicsEnvironment();
         Font[] fonts = graphEnvi.getAllFonts();
-        for (int i = 0; i < fonts.length; i++) {
-            if (!names.contains(fonts[i].getFamily())) {
-                names.add(fonts[i].getFamily());
+        for (Font font : fonts) {
+            if (!names.contains(font.getFamily())) {
+                names.add(font.getFamily());
             }
         }
         return names;
@@ -1029,15 +1101,7 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    // initializes text sample area which gives text sample of the font
-//    private void initTextSampleArea() {
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = (Integer) textFirstChar.getValue(); i < (Integer) textLastChar.getValue(); i++) {
-//            sb.append((char) (i));
-//        }
-//        GUI_Logic.setMyText(sb.toString());
-//        textSample.setText(sb.toString());
-//    }
+    // init radio group of mode selecting (LOAD / DERIVE)
     private void initRadioButtonGroup() {
         radioButtonGroup.add(radioButtonCreate);
         radioButtonGroup.add(radioButtonLoadPre);
@@ -1093,6 +1157,7 @@ public class GUI extends javax.swing.JFrame {
             boolean success = this.guiLogic.fileOpen(openedFile);
             if (success) {
                 radioButtonLoadPre.setSelected(true);
+                this.imageZoomSlider.setValue(100); // resets the slider to 100%
                 mode = Operation.LOAD; // just for any case sets the mode to LOAD
                 activateRefresh(); // needs to be refreshed again since it's loaded..
                 JOptionPane.showMessageDialog(this,
@@ -1179,6 +1244,69 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
+    // update the format in the Font region
+    private void updateFormat() {
+        switch (fontDerFormatSelector.getSelectedIndex()) {
+            case 0:
+                guiLogic.setFontFormat("FON1");
+                break;
+            case 1:
+                guiLogic.setFontFormat("FON2");
+                break;
+            case 2:
+                guiLogic.setFontFormat("BMF");
+                break;
+        }
+    }
+
+    // update font in the Font region
+    private void updateFont() {
+        Font font;
+        if (fontBold.isSelected() && fontItalic.isSelected()) {
+            font = new Font((String) fontSelector.getSelectedItem(), Font.BOLD + Font.ITALIC, (Integer) fontSize.getValue());
+        } else if (fontBold.isSelected()) {
+            font = new Font((String) fontSelector.getSelectedItem(), Font.BOLD, (Integer) fontSize.getValue());
+        } else if (fontItalic.isSelected()) {
+            font = new Font((String) fontSelector.getSelectedItem(), Font.ITALIC, (Integer) fontSize.getValue());
+        } else {
+            font = new Font((String) fontSelector.getSelectedItem(), Font.PLAIN, (Integer) fontSize.getValue());
+        }
+        // set the font in the text sample for display
+        this.textSample.setFont(font);
+        if (this.guiLogic != null) {
+            this.guiLogic.setMyFont(font);
+        }
+    }
+
+    // update spinners in the Text region
+    private void updateSpinners() {
+        int first = (Integer) textFirstChar.getValue();
+        char firstChar = (char) first;
+        textFirstCharValue.setText(String.valueOf(firstChar));
+
+        int last = (Integer) textLastChar.getValue();
+        char lastChar = (char) last;
+        textLastCharValue.setText(String.valueOf(lastChar));
+
+        StringBuilder sb = new StringBuilder();
+        if ((int) textFirstChar.getValue() <= (int) textLastChar.getValue()) {
+            if (this.guiLogic.getFontFormat() != null && !this.guiLogic.getFontFormat().equals("FON1")) {
+                for (int i = (Integer) textFirstChar.getValue(); i <= (Integer) textLastChar.getValue(); i++) {
+                    sb.append((char) (i));
+                }
+                this.guiLogic.setMyText(sb.toString());
+                textSample.setText(sb.toString());
+            } else {
+                for (int i = 0; i < 256; i++) {
+                    sb.append((char) (i));
+                }
+                this.guiLogic.setMyText(sb.toString());
+                textSample.setText(sb.toString());
+            }
+        }
+        this.guiLogic.setSpacing((Integer) textSpacing.getValue());
+    }
+
     // updating the colors on the GUI
     private void updateColors() {
         fgButton.setBackground(this.guiLogic.getFgColor());
@@ -1188,7 +1316,8 @@ public class GUI extends javax.swing.JFrame {
 
     // enables or disables components on 3 JPanels depending on operation LOAD/DERIVE
     private void setEnabledRegions(boolean bool) {
-        infoStrTextFld.setEditable(bool && guiLogic.getFontFormat().equals("BMF"));
+        infoStrTextFld.setEditable(bool && guiLogic != null
+                && guiLogic.getFontFormat() != null && guiLogic.getFontFormat().equals("BMF"));
         testStrTextFld.setEditable(!bool);
 
         fontDerFormatSelector.setEnabled(bool);
@@ -1212,8 +1341,7 @@ public class GUI extends javax.swing.JFrame {
 
     // GUI Refresh method
     private void workRefresh() {
-        if (!resetTriggered) { // reset triggered is what prevents those threads from working            
-            this.refreshThrState = State.WORK;
+        if (!resetTriggered) { // reset triggered is what prevents those threads from working                        
             updateColors();
             ImageIcon icon = null;
             imagePreview.setIcon(icon);
@@ -1237,63 +1365,11 @@ public class GUI extends javax.swing.JFrame {
                 this.fontLoadFormatTextFld.setText("");
             }
 
-            // FileNameExtensionFilter filter;
-            switch (fontDerFormatSelector.getSelectedIndex()) {
-                case 0:
-                    guiLogic.setFontFormat("FON1");
-                    // filter = new FileNameExtensionFilter("Doom Font Lump (*.lmp)", "lmp");
-                    // fileSaver.setFileFilter(filter);
-                    break;
-                case 1:
-                    guiLogic.setFontFormat("FON2");
-                    // filter = new FileNameExtensionFilter("Doom Font Lump (*.lmp)", "lmp");
-                    // fileSaver.setFileFilter(filter);
-                    break;
-                case 2:
-                    guiLogic.setFontFormat("BMF");
-                    // filter = new FileNameExtensionFilter("Byte Map Font (*.bmf)", "bmf");
-                    // fileSaver.setFileFilter(filter);
-                    break;
-            }
+            this.guiLogic.setZoom(this.imageZoomSlider.getValue());
+
             if (this.mode == Operation.DERIVE) {
-                setEnabledRegions(true); // enables many features
-                Font font;
-                if (fontBold.isSelected() && fontItalic.isSelected()) {
-                    font = new Font((String) fontSelector.getSelectedItem(), Font.BOLD + Font.ITALIC, (Integer) fontSize.getValue());
-                } else if (fontBold.isSelected()) {
-                    font = new Font((String) fontSelector.getSelectedItem(), Font.BOLD, (Integer) fontSize.getValue());
-                } else if (fontItalic.isSelected()) {
-                    font = new Font((String) fontSelector.getSelectedItem(), Font.ITALIC, (Integer) fontSize.getValue());
-                } else {
-                    font = new Font((String) fontSelector.getSelectedItem(), Font.PLAIN, (Integer) fontSize.getValue());
-                }
-                this.guiLogic.setMyFont(font);
-                textSample.setFont(font);
-                StringBuilder sb = new StringBuilder();
-                int first = (Integer) textFirstChar.getValue();
-                char firstChar = (char) first;
-                textFirstCharValue.setText(String.valueOf(firstChar));
 
-                int last = (Integer) textLastChar.getValue();
-                char lastChar = (char) last;
-                textLastCharValue.setText(String.valueOf(lastChar));
-
-                if ((int) textFirstChar.getValue() <= (int) textLastChar.getValue()) {
-                    if (this.guiLogic.getFontFormat() != null && !this.guiLogic.getFontFormat().equals("FON1")) {
-                        for (int i = (Integer) textFirstChar.getValue(); i <= (Integer) textLastChar.getValue(); i++) {
-                            sb.append((char) (i));
-                        }
-                        this.guiLogic.setMyText(sb.toString());
-                        textSample.setText(sb.toString());
-                    } else {
-                        for (int i = 0; i < 256; i++) {
-                            sb.append((char) (i));
-                        }
-                        this.guiLogic.setMyText(sb.toString());
-                        textSample.setText(sb.toString());
-                    }
-                }
-                this.guiLogic.setSpacing((Integer) textSpacing.getValue());
+                setEnabledRegions(true); // enables many features                                                              
 
                 this.guiLogic.setMyInfo(infoStrTextFld.getText());
 
@@ -1333,7 +1409,6 @@ public class GUI extends javax.swing.JFrame {
 
             synchronized (objWrkRef) {
                 try {
-                    this.refreshThrState = State.IDLE;
                     objWrkRef.wait();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -1353,7 +1428,6 @@ public class GUI extends javax.swing.JFrame {
     // Palette refresh method
     private void workPalette() {
         if (!this.resetTriggered) { // reset triggered is what prevents those threads from working
-            this.palThrState = State.WORK;
             String selectedItem = (String) paletteSelector.getSelectedItem();
             palettePreview.setEnabled(true);
             switch (selectedItem) {
@@ -1379,12 +1453,8 @@ public class GUI extends javax.swing.JFrame {
 
             activateRefresh(); // this is better approach since race condition is over                        
 
-//            synchronized (objReset) {
-//                objReset.notify();
-//            }
             synchronized (objWrkPal) {
                 try {
-                    this.palThrState = State.IDLE;
                     objWrkPal.wait();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -1406,14 +1476,13 @@ public class GUI extends javax.swing.JFrame {
         URL icon_url = getClass().getResource(RESOURCES_DIR + LICENSE_LOGO_FILE_NAME);
         if (icon_url != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<html><b>VERSION 1.7.1 - STONEWALL (PUBLIC BUILD reviewed on 2019-02-12 at 15:30).</b></html>\n");
+            sb.append("<html><b>VERSION 1.7.2 - TITANIUM (PUBLIC BUILD reviewed on 2019-02-21 at 22:30).</b></html>\n");
             sb.append("<html><b>This software is free software, </b></html>\n");
             sb.append("<html><b>licensed under GNU General Public License (GPL).</b></html>\n");
             sb.append("\n");
             sb.append("Changelog:\n");
-            sb.append("\t- Mandatory unused color is set to rose one.\n");
-            sb.append("\t- User can now view and create lump fonts (Big and Console ones) for Doom.\n");
-            sb.append("\t- Fixed bug when saving BMF font for the loaded BMF font (duplicating).\n");
+            sb.append("\t- Performance increased as the threads are lightweight.\n");
+            sb.append("\t- Image zoom added (from 10% to 400%).\n");
             sb.append("\n");
             sb.append("Objective:\n");
             sb.append("\tThe purpose of this program is viewing and creating Byte Map and Lump Fonts for \n");
@@ -1468,7 +1537,7 @@ public class GUI extends javax.swing.JFrame {
         }
     }
 
-    // Asynchronous reset
+    // Asynchronous reset - returns program into initial state
     private void reset() {
         this.resetTriggered = true;
         this.mode = Operation.LOAD;
@@ -1501,6 +1570,8 @@ public class GUI extends javax.swing.JFrame {
         this.textLastCharValue.setText("");
         // image reset                
         this.imagePreview.setIcon(null);
+        this.imageZoomSlider.setValue(100);
+        this.imageZoomPercentLabel.setText("100%");
         // more reset        
         this.guiLogic.reset();
         this.resetTriggered = false;
@@ -1539,13 +1610,17 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel fontSizeLabel;
     private javax.swing.JCheckBox fontTestTransparency;
     private javax.swing.JLabel imagePreview;
-    private javax.swing.JScrollPane imageSP;
+    private javax.swing.JLabel imageZoomLabel;
+    private javax.swing.JLabel imageZoomPercentLabel;
+    private javax.swing.JSlider imageZoomSlider;
     private javax.swing.JMenuItem infoAbout;
     private javax.swing.JMenuItem infoHelp;
     private javax.swing.JMenu infoMenu;
     private javax.swing.JLabel infoStrLabel;
     private javax.swing.JTextField infoStrTextFld;
     private javax.swing.JMenuItem infoTips;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lastCharSemicolon;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton outlineColorButton;
@@ -1570,6 +1645,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane textSampleSP;
     private javax.swing.JSpinner textSpacing;
     private javax.swing.JLabel textSpacingLabel;
+    private javax.swing.JLabel textSupportedIcon;
     private javax.swing.JCheckBox useAntialiasing;
     private javax.swing.JCheckBox useGradient;
     private javax.swing.JCheckBox useOutline;

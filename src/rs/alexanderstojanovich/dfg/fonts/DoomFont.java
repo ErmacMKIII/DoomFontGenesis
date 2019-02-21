@@ -70,10 +70,10 @@ public class DoomFont {
     // Helping the user figure out where error occurred
     protected boolean error = false;
     protected String errorMsg;
+
     //--------------------------------------------------------------------------
     // A - CONSTRUCTORS
     //--------------------------------------------------------------------------     
-
     // A1 - CONSTRUCTOR USED WHEN READING FROM THE BINARY FONT FILE
     public DoomFont(byte[] buffer, int pos) {
         this.buffer = buffer;
@@ -323,6 +323,14 @@ public class DoomFont {
 
     public void setTransparentColor(Color transparentColor) {
         this.transparentColor = transparentColor;
+    }
+
+    public Color getUnusedColor() {
+        return unusedColor;
+    }
+
+    public void setUnusedColor(Color unusedColor) {
+        this.unusedColor = unusedColor;
     }
 
     public DoomFontChar[] getChars() {

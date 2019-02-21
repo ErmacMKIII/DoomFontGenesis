@@ -51,6 +51,7 @@ public class BigFont extends DoomFont {
     //--------------------------------------------------------------------------
     // B - METHODS
     //--------------------------------------------------------------------------
+    // priv method for the constructor A1 (Big Font) -> Buffer to Font
     private void loadFont() {
         if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '2') { // The characters 'F', 'O', 'N', and '2'.
             // -- READING FIRST DATA AFTER THE HEADER                                           
@@ -156,6 +157,7 @@ public class BigFont extends DoomFont {
         // error is not successful
     }
 
+    // priv method for the constructor A2 (Big Font) -> Font to Buffer
     private void unloadFont() {
         // -- WRITING HEADER OF THE BIG FONT
         this.buffer[0] = 'F'; // The characters 'F', 'O', 'N', and '2'.   

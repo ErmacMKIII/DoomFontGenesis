@@ -32,11 +32,6 @@ public class BMF extends DoomFont {
     // Some information about the font
     private String info;
 
-    // Index 0 is transparent and not described,
-    // Index 1 is where the whole thing with palette starts,
-    // There's a reason though we cannot allow palettes larger than 256.
-    public static final int PAL_MAX_SIZE = 256;
-
     // As said - line height..
     private int line_height;
     // Size over the base line
@@ -81,7 +76,8 @@ public class BMF extends DoomFont {
 
     //--------------------------------------------------------------------------
     // B - METHODS
-    //--------------------------------------------------------------------------            
+    //--------------------------------------------------------------------------
+    // priv method for the constructor A1 (BMF) -> Buffer to Font
     private void loadFont() {
         if (buffer[0] == (byte) 0xE1 && buffer[1] == (byte) 0xE6 && buffer[2] == (byte) 0xD5 && buffer[3] == (byte) 0x1A) { // BMF Magic Header
             // -- READING FIRST DATA AFTER THE HEADER                                                 
@@ -115,9 +111,6 @@ public class BMF extends DoomFont {
 
             }
             pos += 3 * p;
-            /* in bmf, color 0 is meant to be transparent. i start
-                    * reading palette 3 bytes after and put pink (rgb = 0xff00ff)
-                    * in the first color. */
             // -- READ INFO LENGTH                    
             int l = buffer[pos++] & 0xFF;
             // -- READ INFO STRING            
@@ -165,6 +158,7 @@ public class BMF extends DoomFont {
         // error is not successful        
     }
 
+    // priv method for the constructor A2 (Big Font) -> Font to Buffer
     private void unloadFont() {
         // -- WRITING MAGIC HEADER            
         this.buffer[0] = (byte) 0xE1;
@@ -225,12 +219,10 @@ public class BMF extends DoomFont {
         }
     }
 
+    // generates image displaying all the characters in the BMF font (overriden default)
     @Override
     public BufferedImage generateImage(boolean transparency) {
         BufferedImage image = null;
-        if (verticalOffsets == true) {
-            return null;
-        }
         image = new BufferedImage(this.totalwidth + 2, this.maxheight + 2,
                 transparency ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
         for (DoomFontChar ch : this.chars) {
@@ -255,11 +247,12 @@ public class BMF extends DoomFont {
         return image;
     }
 
+    // generaters image displaying text, it allows typing in the BMF font (overriden default)
     @Override
     public BufferedImage generateImage(boolean transparency, String text) {
         // 1. initializing
         BufferedImage image = null;
-        if (text.isEmpty() || verticalOffsets == true) {
+        if (text.isEmpty()) {
             return null;
         }
         int totalwidth = 0;

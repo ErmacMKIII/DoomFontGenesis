@@ -26,9 +26,12 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.awt.image.RescaleOp;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import javax.swing.ImageIcon;
@@ -88,7 +91,15 @@ public class GUILogic {
     // Color vector for displaying the color map
     private DoomFontChar[] charVector;
     // Doom Font Format
-    private String fontFormat;
+    private String fontFormat = "FON1";
+
+    // Image zoom factor (in percentage)
+    private int zoom = 100;
+
+    // the success of the saving, the Integer which can be the one of the that 3
+    public static final int ERROR = -1;
+    public static final int WARNING = 0;
+    public static final int OK = 1;
 
     //--------------------------------------------------------------------------
     // A - CONSTRUCTORS 
@@ -163,7 +174,11 @@ public class GUILogic {
                 imageRender = fontLoad.generateImage(transparency);
             }
             if (imageRender != null) {
-                imageIcon = new ImageIcon(imageRender);
+                AffineTransform xform = new AffineTransform();
+                xform.scale(zoom / 100.0, zoom / 100.0);
+                AffineTransformOp atOp = new AffineTransformOp(xform, null);
+                BufferedImage destImage = atOp.filter(imageRender, null);
+                imageIcon = new ImageIcon(destImage);
             }
             colorPanel.setEnabled(true);
 
@@ -364,7 +379,13 @@ public class GUILogic {
             Graphics2D graphicsResult = imageResult.createGraphics();
             graphicsResult.drawImage(imageOverlay, 0, 0, null);
             graphicsResult.drawImage(imageRender, 0, 0, null);
-            imageIcon = new ImageIcon(imageResult);
+
+            AffineTransform xform = new AffineTransform();
+            xform.scale(zoom / 100.0, zoom / 100.0);
+            AffineTransformOp atOp = new AffineTransformOp(xform, null);
+            BufferedImage destImage = atOp.filter(imageResult, null);
+
+            imageIcon = new ImageIcon(destImage);
         }
 
         return imageIcon;
@@ -424,7 +445,7 @@ public class GUILogic {
         }
     }
 
-    // Asynchronous reset
+    // Asynchronous reset  - returns the logic into initial state
     public void reset() {
         myFont = new Font("Courier New", Font.PLAIN, 12);
         myText = null;
@@ -444,7 +465,7 @@ public class GUILogic {
 
         charVector = null;
 
-        fontFormat = null;
+        fontFormat = "FON1";
 
         Palette.reset();
 
@@ -608,6 +629,14 @@ public class GUILogic {
 
     public void setFontFormat(String fontFormat) {
         this.fontFormat = fontFormat;
+    }
+
+    public int getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(int zoom) {
+        this.zoom = zoom;
     }
 
 }
