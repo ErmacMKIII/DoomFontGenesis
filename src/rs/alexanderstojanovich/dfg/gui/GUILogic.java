@@ -31,7 +31,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.awt.image.RescaleOp;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import javax.swing.ImageIcon;
@@ -467,6 +466,7 @@ public class GUILogic {
 
         fontFormat = "FON1";
 
+        zoom = 100; // resetting zoom; damn forgot this
         Palette.reset();
 
         for (JLabel label : colorVector) {
