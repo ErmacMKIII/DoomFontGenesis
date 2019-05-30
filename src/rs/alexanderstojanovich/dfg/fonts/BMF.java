@@ -105,7 +105,7 @@ public class BMF extends DoomFont {
                         Math.min(green << 2 | green >> 4, 0xFF),
                         Math.min(blue << 2 | blue >> 4, 0xFF)
                 );
-                if (!color.equals(transparentColor) && !this.palette.contains(color) && this.palette.size() < PAL_MAX_SIZE) {
+                if (!color.equals(transparentColor) /*&& !this.palette.contains(color)*/ && this.palette.size() <= PAL_MAX_SIZE) {
                     this.palette.add(color);
                 }
 
@@ -230,7 +230,7 @@ public class BMF extends DoomFont {
             for (int x = 0; x < ch.getW(); x++) {
                 for (int y = 0; y < ch.getH(); y++) {
                     int e = ch.getW() * y + x;
-                    int index = ch.getData()[e];
+                    int index = ch.getData()[e] & 0xFF;
                     if (index >= 0 && index < this.palette.size()) {
                         Color color = this.palette.get(index);
                         if (!color.equals(transparentColor)) {
@@ -277,7 +277,7 @@ public class BMF extends DoomFont {
                 for (int x = 0; x < ch.getW(); x++) {
                     for (int y = 0; y < ch.getH(); y++) {
                         int e = ch.getW() * y + x;
-                        int index = ch.getData()[e];
+                        int index = ch.getData()[e] & 0xFF;
                         if (index >= 0 && index < this.palette.size()) {
                             Color color = this.palette.get(index);
                             if (!color.equals(transparentColor)) {

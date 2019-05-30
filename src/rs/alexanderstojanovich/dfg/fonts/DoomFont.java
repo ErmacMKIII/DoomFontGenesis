@@ -24,9 +24,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static rs.alexanderstojanovich.dfg.fonts.BMF.PAL_MAX_SIZE;
 
 /**
  *
@@ -36,16 +36,25 @@ public class DoomFont {
 
     // Font type in set {FON1, FON2, BMF}
     protected String type;
+
+    // Doom color comparator (taken from ZDoom)
+    protected static Comparator<Color> doomComp = new Comparator<Color>() {
+        @Override
+        public int compare(Color o1, Color o2) {
+            return (299 * (o1.getRed() - o2.getRed()) + 587 * (o1.getGreen() - o2.getGreen()) + 114 * (o1.getBlue() - o2.getBlue()));
+        }
+    };
+
     // Array List of RGB entries - palette of colors
     protected ArrayList<Color> palette = new ArrayList<Color>();
 
     // Index 0 is transparent and not described,
     // Index 1 is where the whole thing with palette starts,
     // There's a reason though we cannot allow palettes larger than 256.
-    public static final int PAL_MAX_SIZE = 256;
+    public static final int PAL_MAX_SIZE = 255;
 
     // Setting this color is important
-    protected Color transparentColor = Color.BLACK;
+    protected Color transparentColor = new Color(35, 0, 60);
 
     // Setting this color is also important (it must be added as the last color)
     // for some things to work
@@ -99,11 +108,30 @@ public class DoomFont {
                         }
                         if (px >= 0 && px < image.getWidth() && py >= 0 && py < image.getHeight()) {
                             Color color = new Color(image.getRGB(px, py));
-                            if (!palette.contains(color) && !color.equals(Color.BLACK) && palette.size() < PAL_MAX_SIZE) {
-                                palette.add(color);
-                            }
                             if (!color.equals(Color.BLACK)) {
-                                ch.getData()[e] = (byte) (Math.min(palette.indexOf(color), 0xFF));
+                                if (palette.size() < PAL_MAX_SIZE) { // if pallete size is less then MAX ALLOWED SIZE
+                                    if (!palette.contains(color)) { // if it doesn't contain color
+                                        palette.add(color); // add the color
+                                    }
+                                    ch.getData()[e] = (byte) (Math.min(palette.indexOf(color), 0xFF));
+                                } else if (palette.size() == PAL_MAX_SIZE) { // if pallete is MAXED OUT, use approximation
+                                    if (!palette.contains(color)) {
+                                        int mindeviation = 255000;
+                                        int mindevindex = -1;
+                                        for (Color palColor : palette) { // by finding color with minimal absolute deviation
+                                            int deviation = Math.abs(doomComp.compare(color, palColor));
+                                            if (deviation < mindeviation) {
+                                                mindeviation = deviation;
+                                                mindevindex = palette.indexOf(palColor);
+                                            }
+                                        }
+                                        if (mindevindex != -1) { // and parsing that color index into the character data
+                                            ch.getData()[e] = (byte) (Math.min(mindevindex, 0xFF));
+                                        }
+                                    } else {
+                                        ch.getData()[e] = (byte) (Math.min(palette.indexOf(color), 0xFF));
+                                    }
+                                }
                             }
                         }
                     }
@@ -141,7 +169,7 @@ public class DoomFont {
                 for (int x = 0; x < ch.getW(); x++) {
                     for (int y = 0; y < ch.getH(); y++) {
                         int e = ch.getW() * y + x;
-                        int index = ch.getData()[e];
+                        int index = ch.getData()[e] & 0xFF;
                         if (index >= 0 && index < this.palette.size()) {
                             Color color = this.palette.get(index);
                             if (!color.equals(transparentColor)) {
@@ -195,7 +223,7 @@ public class DoomFont {
                 for (int x = 0; x < ch.getW(); x++) {
                     for (int y = 0; y < ch.getH(); y++) {
                         int e = ch.getW() * y + x;
-                        int index = ch.getData()[e];
+                        int index = ch.getData()[e] & 0xFF;
                         if (index >= 0 && index < this.palette.size()) {
                             Color color = this.palette.get(index);
                             if (!color.equals(transparentColor)) {

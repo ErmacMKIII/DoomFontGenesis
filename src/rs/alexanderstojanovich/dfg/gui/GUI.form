@@ -102,7 +102,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="Doom Font Genesis - TITANIUM"/>
+    <Property name="title" type="java.lang.String" value="Doom Font Genesis - URANIUM"/>
     <Property name="name" type="java.lang.String" value="DoomFontGenesis" noResource="true"/>
     <Property name="resizable" type="boolean" value="false"/>
     <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -155,20 +155,6 @@
               </Group>
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="testStrLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="infoStrLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="fontNameLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="infoStrTextFld" max="32767" attributes="0"/>
-                              <Component id="testStrTextFld" alignment="0" max="32767" attributes="0"/>
-                              <Component id="fontSelector" alignment="0" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
                           <Component id="fontBold" linkSize="7" min="-2" max="-2" attributes="0"/>
@@ -179,9 +165,23 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="fontSize" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="fontTestTransparency" min="-2" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="testStrLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="infoStrLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="fontNameLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="fontTestTransparency" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="infoStrTextFld" max="32767" attributes="0"/>
+                              <Component id="testStrTextFld" alignment="0" max="32767" attributes="0"/>
+                              <Component id="fontSelector" alignment="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -559,7 +559,7 @@
         <Component class="javax.swing.JSpinner" name="textFirstChar">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="32" maximum="127" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+              <SpinnerModel initial="32" maximum="255" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
             </Property>
           </Properties>
           <Events>

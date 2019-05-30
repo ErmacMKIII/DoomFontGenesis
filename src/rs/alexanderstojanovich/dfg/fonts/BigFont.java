@@ -86,7 +86,7 @@ public class BigFont extends DoomFont {
                 int green = buffer[pos + i * 3 + 1] & 0xFF;
                 int blue = buffer[pos + i * 3 + 2] & 0xFF;
                 Color color = new Color(red, green, blue);
-                if (!this.palette.contains(color) && this.palette.size() < PAL_MAX_SIZE) {
+                if (!this.palette.contains(color) && this.palette.size() <= PAL_MAX_SIZE) {
                     this.palette.add(color);
                 }
 

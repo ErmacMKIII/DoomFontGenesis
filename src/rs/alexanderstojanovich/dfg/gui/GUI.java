@@ -33,14 +33,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BoundedRangeModel;
-import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import rs.alexanderstojanovich.dfg.fonts.BMF;
 
@@ -95,18 +92,27 @@ public class GUI extends javax.swing.JFrame {
     // Opened and saved file respectively
     private File openedFile, savedFile;
 
+    // Initilaztion progress in percentage
+    private static int progress = 0;
+
     /**
      * Creates new form NewJFrame
      */
     public GUI() {
         initComponents();
+        progress += 25;
         initPosition();
         initRadioButtonGroup();
+        progress += 17;
         initFontSelector();
+        progress += 15;
         // initTextSampleArea();
         initDFGLogos();
+        progress += 5;
         initDialogs();
+        progress += 9;
         this.guiLogic = new GUILogic(this.palettePreview);
+        progress += 13;
     }
 
     /**
@@ -192,7 +198,7 @@ public class GUI extends javax.swing.JFrame {
         fileSaver.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Doom Font Genesis - TITANIUM");
+        setTitle("Doom Font Genesis - URANIUM");
         setName("DoomFontGenesis"); // NOI18N
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 600));
@@ -357,17 +363,6 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(fontPanelLayout.createSequentialGroup()
                 .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(fontPanelLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(testStrLabel)
-                            .addComponent(infoStrLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(fontNameLabel, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(infoStrTextFld)
-                            .addComponent(testStrTextFld)
-                            .addComponent(fontSelector, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(fontPanelLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(fontBold)
                         .addGap(12, 12, 12)
@@ -376,9 +371,20 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(fontSizeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fontSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, fontPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(fontTestTransparency)))
+                    .addGroup(fontPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(testStrLabel)
+                            .addComponent(infoStrLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(fontNameLabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(fontPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(fontTestTransparency))
+                            .addComponent(infoStrTextFld)
+                            .addComponent(testStrTextFld)
+                            .addComponent(fontSelector, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
@@ -432,10 +438,10 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         textSample.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 textSampleInputMethodTextChanged(evt);
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         textSampleSP.setViewportView(textSample);
@@ -444,7 +450,7 @@ public class GUI extends javax.swing.JFrame {
 
         lastCharSemicolon.setText("Last Char (ASCII):");
 
-        textFirstChar.setModel(new javax.swing.SpinnerNumberModel(32, 0, 127, 1));
+        textFirstChar.setModel(new javax.swing.SpinnerNumberModel(32, 0, 255, 1));
         textFirstChar.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 textFirstCharStateChanged(evt);
@@ -1040,8 +1046,11 @@ public class GUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-
+        //</editor-fold>        
+        GUISplashScreen splashScreen = new GUISplashScreen();
+        splashScreen.setUp();
+        Thread splashUpdater = new Thread(splashScreen, "Splash Screen Updater");
+        splashUpdater.start();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -1058,6 +1067,7 @@ public class GUI extends javax.swing.JFrame {
                     }
                 };
                 gui.workerRefresh.start();
+                GUI.progress += 8;
                 // Making thread which work is to refresh the palette
                 gui.workerPalette = new Thread("Palette Working Thread") {
                     @Override
@@ -1068,10 +1078,14 @@ public class GUI extends javax.swing.JFrame {
                     }
                 };
                 gui.workerPalette.start();
+                GUI.progress += 8;
             }
-
         });
+    }
 
+    // return progress for splash screen purpose
+    public static int getProgress() {
+        return progress;
     }
 
     // Fetch all the fonts (their names) installed on the system (this OS)
@@ -1476,13 +1490,13 @@ public class GUI extends javax.swing.JFrame {
         URL icon_url = getClass().getResource(RESOURCES_DIR + LICENSE_LOGO_FILE_NAME);
         if (icon_url != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<html><b>VERSION 1.7.2 - TITANIUM (PUBLIC BUILD reviewed on 2019-02-21 at 22:30).</b></html>\n");
+            sb.append("<html><b>VERSION 1.7.3 - URANIUM (PUBLIC BUILD reviewed on 2019-05-30 at 18:30).</b></html>\n");
             sb.append("<html><b>This software is free software, </b></html>\n");
             sb.append("<html><b>licensed under GNU General Public License (GPL).</b></html>\n");
             sb.append("\n");
             sb.append("Changelog:\n");
-            sb.append("\t- Performance increased as the threads are lightweight.\n");
-            sb.append("\t- Image zoom added (from 10% to 400%).\n");
+            sb.append("\t- Fixed errors when palette has over 127 colors.\n");
+            sb.append("\t- Feature to save image that has no palette and lot of colors by using deviation approximation.\n");
             sb.append("\n");
             sb.append("Objective:\n");
             sb.append("\tThe purpose of this program is viewing and creating Byte Map and Lump Fonts for \n");

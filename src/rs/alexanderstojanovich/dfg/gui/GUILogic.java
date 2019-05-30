@@ -31,7 +31,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.awt.image.RescaleOp;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import javax.swing.ImageIcon;
@@ -95,11 +94,6 @@ public class GUILogic {
 
     // Image zoom factor (in percentage)
     private int zoom = 100;
-
-    // the success of the saving, the Integer which can be the one of the that 3
-    public static final int ERROR = -1;
-    public static final int WARNING = 0;
-    public static final int OK = 1;
 
     //--------------------------------------------------------------------------
     // A - CONSTRUCTORS 
@@ -341,12 +335,12 @@ public class GUILogic {
                 graphicsRender.translate(cb.getWidth() + spacing, 0);
             }
 
-            // if antialiasing is selected multiply color with it's alpha
+            //if antialiasing is selected multiply color with it's alpha
             if (antialiasing) {
                 for (int px = 0; px < imageRender.getWidth(); px++) {
                     for (int py = 0; py < imageRender.getHeight(); py++) {
                         Color srcCol = new Color(imageRender.getRGB(px, py), true);
-                        if (srcCol.getAlpha() > 0) { // this if is in order to not ruin the borders around the chars
+                        if (srcCol.getAlpha() > 0) { // this if is in order to not ruin the borders around the chars                            
                             Color dstCol = new Color( // constructor with the three floats is called
                                     (srcCol.getAlpha() / 255.0f) * (srcCol.getRed() / 255.0f),
                                     (srcCol.getAlpha() / 255.0f) * (srcCol.getGreen() / 255.0f),
@@ -357,7 +351,6 @@ public class GUILogic {
                     }
                 }
             }
-
             // if outline is selected;                                                
             if (outlineWidth > 0) {
                 // Copy of raster of unaltered image is needed!!
@@ -467,6 +460,7 @@ public class GUILogic {
 
         fontFormat = "FON1";
 
+        zoom = 100; // resetting zoom; damn forgot this
         Palette.reset();
 
         for (JLabel label : colorVector) {
@@ -477,7 +471,7 @@ public class GUILogic {
     }
 
     //--------------------------------------------------------------------------
-    // B - GETTERS AND SETTERS  
+    // C - GETTERS AND SETTERS  
     //--------------------------------------------------------------------------
     public boolean isInitialized() {
         return initialized;

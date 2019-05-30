@@ -13,9 +13,10 @@ are good choice for all games overall.
 Game you make font for (Doom, Heretic or Hexen) should match
 palette you've chosen.
 
-Choosing "None" for palette and going for many colors in the font
-may result in bad font which could have palette overflow.
-Use designated game palette instead.
+Program always choose minimal subset of initial designated palette.
+
+Actual Version 1.7.3 - URANIUM fixed color overflow 
+and improved work with maxed out palettes.
 
 <html><b>Keep in mind that only small set of fonts can be synthesized and</b></html> 
 <html><b>even smaller subset will look good in the game.</b></html>

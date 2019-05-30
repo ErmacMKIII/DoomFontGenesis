@@ -1,0 +1,17 @@
+1.7.0
+- Initial open-source build.
+
+1.7.1
+- Mandatory unused color is set to rose one.
+- User can now view and create lump fonts (Big and Console ones) for Doom.
+- Fixed bug when saving BMF for the loaded BMF font (duplicating).
+
+1.7.2
+- Performance increased as the threads are lightweight.
+- Image zoom added (from 10% to 400%).
+
+1.7.3
+- Fixed errors when palette has over 127 colors.
+- Feature to save image that has no palette and lot of colors by using deviation approximation.
+ 
+Enjoy using this program! - Ermac
