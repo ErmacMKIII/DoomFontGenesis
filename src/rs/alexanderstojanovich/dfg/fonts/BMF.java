@@ -54,10 +54,9 @@ public class BMF extends DoomFont {
     // A - CONSTRUCTORS 
     //--------------------------------------------------------------------------
     // A1 - CONSTRUCTOR USED WHEN READING FROM THE BINARY "BMF" FILE
-    public BMF(byte[] buffer, int pos) {
-        super(buffer, pos);
+    public BMF(byte[] buffer) {
+        super(buffer);
         this.loadFont(); // loads font by creating char data about it
-        this.type = "BMF";
     }
 
     // A2 - CONSTRUCTOR USED WHEN MAKING "BMF" FONT FROM PRE EXISTING INSTALLED FONT - NEW SCHOOL VARIANT
@@ -71,11 +70,28 @@ public class BMF extends DoomFont {
         this.size_over = size_over;
         this.size_under = size_under;
         this.unloadFont();
-        this.type = "BMF";
     }
 
     //--------------------------------------------------------------------------
-    // B - METHODS
+    // B - IMPLEMENTED METHODS FOR INITIALIZATION
+    //--------------------------------------------------------------------------
+    @Override
+    protected String initFontType() {
+        return "BMF";
+    }
+
+    @Override
+    protected Color initTransparentColor() {
+        return new Color(35, 0, 60);
+    }
+
+    @Override
+    protected boolean initVerticalOffsets() {
+        return false;
+    }
+
+    //--------------------------------------------------------------------------
+    // C - PRIVATE METHODS FOR CONSTRUCTORS
     //--------------------------------------------------------------------------
     // priv method for the constructor A1 (BMF) -> Buffer to Font
     private void loadFont() {
@@ -296,82 +312,42 @@ public class BMF extends DoomFont {
     }
 
     //--------------------------------------------------------------------------
-    // C - GETTERS AND SETTERS (TRIVIAL) 
+    // C - GETTERS (TRIVIAL) 
     //--------------------------------------------------------------------------
     public int getVersion() {
         return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public String getInfo() {
         return info;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
     public int getLine_height() {
         return line_height;
-    }
-
-    public void setLine_height(int line_height) {
-        this.line_height = line_height;
     }
 
     public int getSize_over() {
         return size_over;
     }
 
-    public void setSize_over(int size_over) {
-        this.size_over = size_over;
-    }
-
     public int getSize_under() {
         return size_under;
-    }
-
-    public void setSize_under(int size_under) {
-        this.size_under = size_under;
     }
 
     public int getAdd_space() {
         return add_space;
     }
 
-    public void setAdd_space(int add_space) {
-        this.add_space = add_space;
-    }
-
     public int getSize_inner() {
         return size_inner;
-    }
-
-    public void setSize_inner(int size_inner) {
-        this.size_inner = size_inner;
     }
 
     public int getColors() {
         return colors;
     }
 
-    public void setColors(int colors) {
-        this.colors = colors;
-    }
-
     public int getHighest_color() {
         return highest_color;
-    }
-
-    public void setHighest_color(int highest_color) {
-        this.highest_color = highest_color;
-    }
-
-    public void setChars(BMFChar[] chars) {
-        this.chars = chars;
     }
 
 }

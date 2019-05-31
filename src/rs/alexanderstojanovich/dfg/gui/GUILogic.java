@@ -72,7 +72,7 @@ public class GUILogic {
     // BMF font either from loading or derived from prexising font
     private DoomFont fontLoad, fontDer;
 
-    // Image whibmfCharVector[i] contains only rendered character data
+    // Image which contains only rendered character data
     private BufferedImage imageRender;
 
     // Foreground (main or primary) color

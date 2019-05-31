@@ -32,10 +32,10 @@ import java.util.logging.Logger;
  *
  * @author Coa
  */
-public class DoomFont {
+public abstract class DoomFont { // Doom Font is an abstract class, we don't know much about it
 
     // Font type in set {FON1, FON2, BMF}
-    protected String type;
+    protected final String type = initFontType();
 
     // Doom color comparator (taken from ZDoom)
     protected static Comparator<Color> doomComp = new Comparator<Color>() {
@@ -53,12 +53,12 @@ public class DoomFont {
     // There's a reason though we cannot allow palettes larger than 256.
     public static final int PAL_MAX_SIZE = 255;
 
-    // Setting this color is important
-    protected Color transparentColor = new Color(35, 0, 60);
+    // Setting this color is important (it can be either Color.BLACK or new Color(35, 0, 60) or something else..)
+    protected Color transparentColor = initTransparentColor();
 
     // Setting this color is also important (it must be added as the last color)
     // for some things to work
-    protected Color unusedColor = new Color(167, 107, 107);
+    protected static final Color UNUSED_COLOR = new Color(167, 107, 107);
 
     // Characters of the Doom Font 
     // (it's length is all the chars that can be displayed)
@@ -73,8 +73,8 @@ public class DoomFont {
     protected int pos = 0; // position in the buffer;
 
     // Are offsets vertical (for BigFont and BMF offsets are horizontal 
-    // but for ConsoleFont offsets are vertical)
-    protected boolean verticalOffsets = false;
+    // but for ConsoleFont offsets are vertical), requires initialisation
+    protected boolean verticalOffsets = initVerticalOffsets();
 
     // Helping the user figure out where error occurred
     protected boolean error = false;
@@ -84,13 +84,12 @@ public class DoomFont {
     // A - CONSTRUCTORS
     //--------------------------------------------------------------------------     
     // A1 - CONSTRUCTOR USED WHEN READING FROM THE BINARY FONT FILE
-    public DoomFont(byte[] buffer, int pos) {
+    protected DoomFont(byte[] buffer) {
         this.buffer = buffer;
-        this.pos = pos;
     }
 
-    // A2 - CONSTRUCTOR USED WHEN MAKING "BMF" FONT FROM PRE EXISTING INSTALLED FONT
-    public DoomFont(BufferedImage image, DoomFontChar[] charVector) {
+    // A2 - CONSTRUCTOR USED WHEN MAKING DOOM FONT FROM PRE EXISTING INSTALLED FONT
+    protected DoomFont(BufferedImage image, DoomFontChar[] charVector) {
         this.chars = charVector;
         if (image != null && charVector != null) {
             this.palette.add(transparentColor);
@@ -99,16 +98,11 @@ public class DoomFont {
                     for (int y = 0; y < ch.getH(); y++) {
                         int e = ch.getW() * y + x;
                         int px, py;
-                        if (this.verticalOffsets) {
-                            px = x;
-                            py = y + ch.getOffset();
-                        } else {
-                            px = x + ch.getOffset();
-                            py = y;
-                        }
+                        px = x + ch.getOffset();
+                        py = y;
                         if (px >= 0 && px < image.getWidth() && py >= 0 && py < image.getHeight()) {
                             Color color = new Color(image.getRGB(px, py));
-                            if (!color.equals(Color.BLACK)) {
+                            if (!color.equals(Color.BLACK) && !color.equals(transparentColor)) {
                                 if (palette.size() < PAL_MAX_SIZE) { // if pallete size is less then MAX ALLOWED SIZE
                                     if (!palette.contains(color)) { // if it doesn't contain color
                                         palette.add(color); // add the color
@@ -142,12 +136,24 @@ public class DoomFont {
                     this.maxheight = ch.getH();
                 }
             }
-            this.palette.add(unusedColor); // TRICK FOR ZDOOM :) - cuz one-color palette won't work
+            this.palette.add(UNUSED_COLOR); // TRICK FOR ZDOOM :) - cuz one-color palette won't work
         }
     }
 
     //--------------------------------------------------------------------------
-    // B - METHODS
+    // B - ABSTRACT INITIALIZATION METHODS
+    //--------------------------------------------------------------------------
+    // alright we need to initialise the font type, which we don't know beforehand
+    protected abstract String initFontType();
+
+    // we need to init this transparent color which is different for the fonts
+    protected abstract Color initTransparentColor();
+
+    // initialise vertical offsets, which can be vertical (console font) or horizontal (big font and bmf)
+    protected abstract boolean initVerticalOffsets();
+
+    //--------------------------------------------------------------------------
+    // C - CORE METHODS
     //--------------------------------------------------------------------------
     // search all the characters in the font and returns one which holds the value same as the key
     protected DoomFontChar giveChar(char key) {
@@ -283,7 +289,7 @@ public class DoomFont {
     }
 
     //--------------------------------------------------------------------------
-    // C - STATIC METHODS
+    // D - STATIC METHODS
     //--------------------------------------------------------------------------
     // polymorphic way of loading the file, it returns font based on the it's header, that's why it's static
     public static DoomFont loadFromFile(File file) {
@@ -313,13 +319,13 @@ public class DoomFont {
                 // it returns one font in that set or it stays null
                 if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '1') {
                     // The characters 'F', 'O', 'N', and '1'.
-                    doomFont = new ConsoleFont(buffer, 0);
+                    doomFont = new ConsoleFont(buffer);
                 } else if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '2') {
                     // The characters 'F', 'O', 'N', and '2'.
-                    doomFont = new BigFont(buffer, 0);
+                    doomFont = new BigFont(buffer);
                 } else if (buffer[0] == (byte) 0xE1 && buffer[1] == (byte) 0xE6 && buffer[2] == (byte) 0xD5 && buffer[3] == (byte) 0x1A) {
                     // BMF Magic Header
-                    doomFont = new BMF(buffer, 0);
+                    doomFont = new BMF(buffer);
                 }
             }
         }
@@ -327,102 +333,50 @@ public class DoomFont {
     }
 
     //--------------------------------------------------------------------------
-    // D - GETTERS AND SETTERS
+    // E - GETTERS
     //--------------------------------------------------------------------------
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public ArrayList<Color> getPalette() {
         return palette;
     }
 
-    public void setPalette(ArrayList<Color> palette) {
-        this.palette = palette;
-    }
-
     public Color getTransparentColor() {
         return transparentColor;
-    }
-
-    public void setTransparentColor(Color transparentColor) {
-        this.transparentColor = transparentColor;
-    }
-
-    public Color getUnusedColor() {
-        return unusedColor;
-    }
-
-    public void setUnusedColor(Color unusedColor) {
-        this.unusedColor = unusedColor;
     }
 
     public DoomFontChar[] getChars() {
         return chars;
     }
 
-    public void setChars(DoomFontChar[] chars) {
-        this.chars = chars;
-    }
-
     public int getTotalwidth() {
         return totalwidth;
-    }
-
-    public void setTotalwidth(int totalwidth) {
-        this.totalwidth = totalwidth;
     }
 
     public int getMaxheight() {
         return maxheight;
     }
 
-    public void setMaxheight(int maxheight) {
-        this.maxheight = maxheight;
-    }
-
     public byte[] getBuffer() {
         return buffer;
-    }
-
-    public void setBuffer(byte[] buffer) {
-        this.buffer = buffer;
     }
 
     public int getPos() {
         return pos;
     }
 
-    public void setPos(int pos) {
-        this.pos = pos;
-    }
-
     public boolean isVerticalOffsets() {
         return verticalOffsets;
-    }
-
-    public void setVerticalOffsets(boolean verticalOffsets) {
-        this.verticalOffsets = verticalOffsets;
     }
 
     public boolean isError() {
         return error;
     }
 
-    public void setError(boolean error) {
-        this.error = error;
-    }
-
     public String getErrorMsg() {
         return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
     }
 
 }

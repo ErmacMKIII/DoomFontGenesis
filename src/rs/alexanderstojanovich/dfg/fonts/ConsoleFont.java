@@ -27,32 +27,46 @@ import java.util.Arrays;
  */
 public class ConsoleFont extends DoomFont {
 
-    private static float lumaRedCoeff = 0.2126f;
-    private static float lumaGreenCoeff = 0.7152f;
-    private static float lumaBlueCoeff = 0.0722f;
+    private static final float LUMA_RED_COEFF = 0.2126f;
+    private static final float LUMA_GREEN_COEFF = 0.7152f;
+    private static final float LUMA_BLUE_COEFF = 0.0722f;
+
     //--------------------------------------------------------------------------
     // A - CONSTRUCTORS
     //--------------------------------------------------------------------------     
-
     // A1 - CONSTRUCTOR USED WHEN READING FROM THE BINARY FONT FILE
-    public ConsoleFont(byte[] buffer, int pos) {
-        super(buffer, pos);
+    public ConsoleFont(byte[] buffer) {
+        super(buffer);
         this.loadFont();
-        this.verticalOffsets = true;
-        this.type = "FON1";
     }
 
     // A2 - CONSTRUCTOR USED WHEN MAKING "BMF" FONT FROM PRE EXISTING INSTALLED FONT    
     public ConsoleFont(BufferedImage image, DoomFontChar[] charVector) {
         super(image, charVector);
-        this.verticalOffsets = true;
         this.unloadFont();
-        this.type = "FON1";
     }
 
     //--------------------------------------------------------------------------
-    // B - METHODS
-    //-------------------------------------------------------------------------- 
+    // B - IMPLEMENTED METHODS FOR INITIALIZATION
+    //--------------------------------------------------------------------------
+    @Override
+    protected String initFontType() {
+        return "FON1";
+    }
+
+    @Override
+    protected Color initTransparentColor() {
+        return Color.BLACK;
+    }
+
+    @Override
+    protected boolean initVerticalOffsets() {
+        return true;
+    }
+
+    //--------------------------------------------------------------------------
+    // C - PRIVATE METHODS FOR CONSTRUCTORS
+    //--------------------------------------------------------------------------
     // priv method for the constructor A1 (Console Font) -> Buffer to Font
     private void loadFont() {
         if (buffer[0] == 'F' && buffer[1] == 'O' && buffer[2] == 'N' && buffer[3] == '1') { // The characters 'F', 'O', 'N', and '1'.
@@ -111,7 +125,7 @@ public class ConsoleFont extends DoomFont {
                     if (!this.palette.contains(color)) {
                         this.palette.add(color);
                     }
-                    if (!color.equals(Color.BLACK)) {
+                    if (!color.equals(transparentColor)) {
                         this.chars[i].getData()[j] = (byte) palette.indexOf(color);
                     }
                 }
@@ -149,7 +163,7 @@ public class ConsoleFont extends DoomFont {
                 for (int i = 0; i < ch.getData().length; i++) {
                     int index = ch.getData()[i] & 0xFF;
                     Color col = this.palette.get(index);
-                    grayscale[i] = (byte) (col.getRed() * lumaRedCoeff + col.getGreen() * lumaGreenCoeff + col.getBlue() * lumaBlueCoeff);
+                    grayscale[i] = (byte) (col.getRed() * LUMA_RED_COEFF + col.getGreen() * LUMA_GREEN_COEFF + col.getBlue() * LUMA_BLUE_COEFF);
                 }
                 byte[] temp = new byte[grayscale.length];
                 // compress the char data and return the compressed size (len)

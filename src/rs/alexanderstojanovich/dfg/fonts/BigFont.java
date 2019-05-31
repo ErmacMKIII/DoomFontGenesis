@@ -35,21 +35,37 @@ public class BigFont extends DoomFont {
     // A - CONSTRUCTORS 
     //--------------------------------------------------------------------------
     // A1 - CONSTRUCTOR USED WHEN READING FROM THE BINARY FONT FILE
-    public BigFont(byte[] buffer, int pos) {
-        super(buffer, pos);
+    public BigFont(byte[] buffer) {
+        super(buffer);
         this.loadFont(); // loads font by creating char data about it
-        this.type = "FON2";
     }
 
     // A2 - CONSTRUCTOR USED WHEN MAKING BIG FONT FROM PRE EXISTING INSTALLED FONT
     public BigFont(BufferedImage image, DoomFontChar[] charVector) {
         super(image, charVector);
         this.unloadFont(); // unloads font to the buffer
-        this.type = "FON2";
     }
 
     //--------------------------------------------------------------------------
-    // B - METHODS
+    // B - IMPLEMENTED METHODS FOR INITIALIZATION
+    //--------------------------------------------------------------------------
+    @Override
+    protected String initFontType() {
+        return "FON2";
+    }
+
+    @Override
+    protected Color initTransparentColor() {
+        return new Color(35, 0, 60);
+    }
+
+    @Override
+    protected boolean initVerticalOffsets() {
+        return false;
+    }
+
+    //--------------------------------------------------------------------------
+    // C - PRIVATE METHODS FOR CONSTRUCTORS
     //--------------------------------------------------------------------------
     // priv method for the constructor A1 (Big Font) -> Buffer to Font
     private void loadFont() {
@@ -211,6 +227,21 @@ public class BigFont extends DoomFont {
                 this.pos += len;
             }
         }
+    }
+    //--------------------------------------------------------------------------
+    // D - GETTERS
+    //--------------------------------------------------------------------------
+
+    public boolean isConstantWidth() {
+        return constantWidth;
+    }
+
+    public boolean isUsesKerning() {
+        return usesKerning;
+    }
+
+    public int getKerning() {
+        return kerning;
     }
 
 }

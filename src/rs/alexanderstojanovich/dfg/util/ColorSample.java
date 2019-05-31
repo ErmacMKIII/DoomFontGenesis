@@ -23,7 +23,7 @@ import java.awt.image.WritableRaster;
  *
  * @author Coa
  */
-public class ColorSample {
+public class ColorSample { // used primarily for drawing outline in GUILogic
 
     private int red = 0;
     private int green = 0;
@@ -98,36 +98,23 @@ public class ColorSample {
         return new ColorSample(avgR, avgG, avgB, avgA);
     }
 
+    //--------------------------------------------------------------------------
+    // C - GETTERS
+    //--------------------------------------------------------------------------
     public int getRed() {
         return red;
-    }
-
-    public void setRed(int red) {
-        this.red = red;
     }
 
     public int getGreen() {
         return green;
     }
 
-    public void setGreen(int green) {
-        this.green = green;
-    }
-
     public int getBlue() {
         return blue;
     }
 
-    public void setBlue(int blue) {
-        this.blue = blue;
-    }
-
     public int getAlpha() {
         return alpha;
-    }
-
-    public void setAlpha(int alpha) {
-        this.alpha = alpha;
     }
 
 }
