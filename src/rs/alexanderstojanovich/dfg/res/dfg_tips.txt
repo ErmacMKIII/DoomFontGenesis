@@ -1,0 +1,29 @@
+For designation and proper use -  
+name your font file accordingly. 
+If you use Byte Map Font, examples are:
+<html><b>"confont.bmf"</b> is for console font,</html>
+<html><b>"smallfnt.bmf"</b> is for small font for chat,</html>
+<html><b>"dbigfont.bmf"</b> is for big Doom font found in menus.</html>
+If you choose to use Lump, filenames are the same but with the .lmp extension.
+
+Recommended is to choose spacing greater than zero. 
+Otherwise characters will overlap when sampling.
+
+Cell size multiplier is useful when characters are cut out because
+of special effects like outline.
+
+When uncertain "6-bit RGB" and "8-bit RGB" color palettes
+are good choice for all games overall.
+
+Game you make font for (Doom, Heretic or Hexen) should match
+palette you've chosen.
+
+Program always choose minimal subset of initial designated palette.
+
+Program always go for minimal deviation approximation 
+when dealing with lot of colors.
+
+Program always holds one loaded font and one font ready for creation!
+
+<html><b>Keep in mind that only small set of fonts can be synthesized and</b></html> 
+<html><b>even smaller subset will look good in the game.</b></html>

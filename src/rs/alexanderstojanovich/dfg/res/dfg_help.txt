@@ -1,0 +1,42 @@
+<html><b>- FOR THE PURPOSE AND ABOUT THIS PROGRAM</b></html>
+<html>check <b>About</b>. Make sure that you checked it first.</html>
+
+<html><b>- TWO MODES OF THE PROGRAM</b></html>
+<html><b>1. LOAD EXISTING DOOM FONT (VIEWER)</b></html>
+    which opens any Doom Lump Font (.lmp) or Byte Map Font (.bmf),
+    shows font format in Format section and previews them in the Image section.
+    Byte Map Font info is displayed in text field Info
+    of the Font section.
+    Palette is displayed in the Effects section.	
+    User can test the Font output by typing in text field Test.
+    To refresh the image hitting enter is required.
+
+<html><b>2. CREATE FROM PREEXISTING FONT (CREATOR)</b></html>
+    which creates font (.lmp or .bmf) file
+    from preexisting installed font on your OS
+    (which came in True Type Font .ttf extension and are installed on the OS).
+    Many features are available to the user, including:
+    - Installed Font as a base,
+    - Character range,
+    - Character spacing and cell size multiplier,
+    - Colors,
+    - Palette,
+    - Additional effects (gradient, outline and anti-aliasing),
+    - Font Info (optional for BMF fonts).
+    When using this mode borders around characters are present.
+    Those borders are an auxiliary overlay which won't be stored in targeted file.
+
+<html><b>- COMMON</b></html>
+    In both modes user can select whether or not 
+    transparency is displayed. This however doesn't affect the targeted file,
+    whether it is loaded or it's in creation.
+
+<html><b>- FILE MANIPULATION</b><html>
+    Any Doom Font (.lmp or .bmf) file can be Opened at any time
+    and program is automatically set to VIEW ONLY 
+    disabling most of the features for creating fonts.
+
+    Any font (.lmp or .bmf) file can be Saved at any time
+    and program retains it's mode allowing user to 
+    save loaded under VIEWER mode or 
+    change preferences and save again under CREATOR mode.
