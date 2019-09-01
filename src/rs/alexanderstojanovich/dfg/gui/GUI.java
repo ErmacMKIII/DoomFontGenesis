@@ -941,7 +941,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void bgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bgButtonActionPerformed
         // TODO add your handling code here:
-        Color color = JColorChooser.showDialog(this, "Choose Foreground Color", this.guiLogic.getBgColor());
+        Color color = JColorChooser.showDialog(this, "Choose Background Color", this.guiLogic.getBgColor());
         if (color != null) {
             this.guiLogic.setBgColor(color);
         }
