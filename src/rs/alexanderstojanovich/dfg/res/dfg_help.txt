@@ -21,7 +21,7 @@
     - Character spacing and cell size multiplier,
     - Colors,
     - Palette,
-    - Additional effects (gradient, outline and anti-aliasing),
+    - Additional effects (gradient, outline, anti-aliasing and shadow effect),
     - Font Info (optional for BMF fonts).
     When using this mode borders around characters are present.
     Those borders are an auxiliary overlay which won't be stored in targeted file.

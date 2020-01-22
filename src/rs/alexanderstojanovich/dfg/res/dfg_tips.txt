@@ -10,7 +10,7 @@ Recommended is to choose spacing greater than zero.
 Otherwise characters will overlap when sampling.
 
 Cell size multiplier is useful when characters are cut out because
-of special effects like outline.
+of special effects like outline. Also useful for shadow effect.
 
 When uncertain "6-bit RGB" and "8-bit RGB" color palettes
 are good choice for all games overall.

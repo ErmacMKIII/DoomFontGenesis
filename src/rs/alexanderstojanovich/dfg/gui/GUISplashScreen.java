@@ -48,7 +48,7 @@ public class GUISplashScreen extends JWindow implements Runnable {
         ImageIcon splashImgIcon = new ImageIcon(splashImgURL);
         this.splashImgLbl.setSize(splashImgIcon.getIconWidth(), splashImgIcon.getIconHeight());
         this.splashImgLbl.setIcon(splashImgIcon);
-        this.progressBar.setForeground(Color.WHITE);
+        this.progressBar.setForeground(new Color(255, 150, 35));
     }
 
     //--------------------------------------------------------------------------

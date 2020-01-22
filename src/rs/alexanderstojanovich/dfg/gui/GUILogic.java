@@ -16,9 +16,6 @@
  */
 package rs.alexanderstojanovich.dfg.gui;
 
-import rs.alexanderstojanovich.dfg.util.Palette;
-import rs.alexanderstojanovich.dfg.fonts.BMFChar;
-import rs.alexanderstojanovich.dfg.fonts.BMF;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -37,11 +34,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
+import rs.alexanderstojanovich.dfg.fonts.BMF;
+import rs.alexanderstojanovich.dfg.fonts.BMFChar;
 import rs.alexanderstojanovich.dfg.fonts.BigFont;
 import rs.alexanderstojanovich.dfg.fonts.ConsoleFont;
 import rs.alexanderstojanovich.dfg.fonts.DoomFont;
 import rs.alexanderstojanovich.dfg.fonts.DoomFontChar;
 import rs.alexanderstojanovich.dfg.util.ColorSample;
+import rs.alexanderstojanovich.dfg.util.Palette;
 
 /**
  *
@@ -81,6 +81,9 @@ public class GUILogic {
     private Color bgColor = Color.CYAN;
     // Outlining color
     private Color outlineColor = Color.BLUE;
+
+    // shadow color (if shadow has been selected by the user)
+    private Color shadowColor = Color.GRAY;
 
     // Way of displaying colors on the layered pane
     // via several labels coloured differently
@@ -207,7 +210,7 @@ public class GUILogic {
     }
 
     // make icon in case for Big Font and BMF, boolean monospace is true in case of Console Font
-    public ImageIcon giveFontDerIcon(boolean monospace, boolean transparency, boolean antialiasing, boolean useGradient, int outlineWidth, double multiplier) {
+    public ImageIcon giveFontDerIcon(boolean monospace, boolean transparency, boolean antialiasing, boolean useGradient, int outlineWidth, boolean shadow, int shadowAngle, double multiplier) {
         ImageIcon imageIcon = null;
         if (myFont != null && myText != null) {
             // define sampler
@@ -362,6 +365,48 @@ public class GUILogic {
                 }
             }
 
+            // if user selected shadow; this is for shadow effect                        
+            if (shadow) {
+                WritableRaster wr = imageRender.copyData(null);
+                for (DoomFontChar ch : charVector) {
+                    for (int px = ch.getOffset(); px < ch.getW() + ch.getOffset(); px++) {
+                        for (int py = 0; py < ch.getH(); py++) {
+                            // calculate dx an dy cuz they are one square away from px and py
+                            float cos = (float) Math.cos(Math.toRadians(shadowAngle));
+                            float sin = (float) Math.sin(Math.toRadians(shadowAngle));
+
+                            float dx = px + cos;
+                            float dy = py + sin;
+                            // constrain dx and dy to the image bounds    
+                            if (dx < ch.getOffset()) {
+                                dx = ch.getOffset();
+                            } else if (dx > ch.getW() + ch.getOffset() - 1) {
+                                dx = (float) (ch.getW() + ch.getOffset() - 1);
+                            }
+
+                            if (dy < 0) {
+                                dy = 0;
+                            } else if (dy > ch.getH() - 1) {
+                                dy = (float) (ch.getH() - 1);
+                            }
+
+                            Color dstPixCol = new Color(imageRender.getRGB(Math.round(dx), Math.round(dy)), true);
+                            ColorSample csg = ColorSample.getGaussianBlurSample(wr, px, py); // calc gauss blur
+                            float csa = csg.getAlpha() / 255.0f; // reason behind this value used is to prevent "too many wrong" pixels
+                            if (dstPixCol.getAlpha() == 0 && csa >= 0.195346f) {
+                                // to create nice shadow effect multiply shadow color components with alpha_sqrt
+                                float alpha_sqrt = (float) Math.sqrt(csa);
+                                float red = alpha_sqrt * shadowColor.getRed() / 255.0f;
+                                float green = alpha_sqrt * shadowColor.getGreen() / 255.0f;
+                                float blue = alpha_sqrt * shadowColor.getBlue() / 255.0f;
+                                Color fineCol = new Color(red, green, blue);
+                                imageRender.setRGB(Math.round(dx), Math.round(dy), fineCol.getRGB());
+                            }
+                        }
+                    }
+                }
+            }
+
             // finalizing - merging overlay with rendered
             Graphics2D graphicsResult = imageResult.createGraphics();
             graphicsResult.drawImage(imageOverlay, 0, 0, null);
@@ -457,6 +502,7 @@ public class GUILogic {
         bgColor = Color.CYAN;
 
         outlineColor = Color.BLUE;
+        shadowColor = Color.GRAY;
 
         charVector = null;
 
@@ -633,6 +679,14 @@ public class GUILogic {
 
     public void setZoom(int zoom) {
         this.zoom = zoom;
+    }
+
+    public Color getShadowColor() {
+        return shadowColor;
+    }
+
+    public void setShadowColor(Color shadowColor) {
+        this.shadowColor = shadowColor;
     }
 
 }

@@ -175,6 +175,11 @@ public class GUI extends javax.swing.JFrame {
         useAntialiasing = new javax.swing.JCheckBox();
         palLabel = new javax.swing.JLabel();
         paletteSelector = new javax.swing.JComboBox<>();
+        useShadow = new javax.swing.JCheckBox();
+        shadowAngleLabel = new javax.swing.JLabel();
+        shadowAngleValue = new javax.swing.JSpinner();
+        shLabel = new javax.swing.JLabel();
+        shColorButton = new javax.swing.JButton();
         palettePreview = new javax.swing.JPanel();
         imagePanel = new javax.swing.JPanel();
         imageScrollPane = new javax.swing.JScrollPane();
@@ -200,7 +205,7 @@ public class GUI extends javax.swing.JFrame {
         fileSaver.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Doom Font Genesis - VALIUM");
+        setTitle("Doom Font Genesis - WARDEN");
         setName("DoomFontGenesis"); // NOI18N
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 600));
@@ -420,7 +425,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(testStrTextFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fontTestTransparency)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         fontPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {fontFormatPanel, fontModePanel});
@@ -440,10 +445,10 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         textSample.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 textSampleInputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         textSampleSP.setViewportView(textSample);
@@ -553,7 +558,7 @@ public class GUI extends javax.swing.JFrame {
                             .addComponent(textMultiplierLabel)
                             .addComponent(textMultiplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(textSupportedIcon))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addComponent(textSampleSP, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -632,6 +637,31 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        useShadow.setText("Shadow");
+        useShadow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                useShadowActionPerformed(evt);
+            }
+        });
+
+        shadowAngleLabel.setText("Angle:");
+
+        shadowAngleValue.setModel(new javax.swing.SpinnerNumberModel(45, 0, 360, 1));
+        shadowAngleValue.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                shadowAngleValueStateChanged(evt);
+            }
+        });
+
+        shLabel.setText("Shadow color:");
+
+        shColorButton.setBorder(null);
+        shColorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                shColorButtonActionPerformed(evt);
+            }
+        });
+
         palettePreview.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Palette", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
         palettePreview.setPreferredSize(new java.awt.Dimension(240, 240));
         palettePreview.setLayout(new java.awt.GridLayout(16, 16, 1, 1));
@@ -643,71 +673,96 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(effectsPanelLayout.createSequentialGroup()
                 .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, effectsPanelLayout.createSequentialGroup()
+                        .addGap(2, 2, 2)
                         .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(palLabel)
+                            .addComponent(shLabel)
                             .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(bgLabel)
                                 .addComponent(outlineLabel, javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(fgLabel, javax.swing.GroupLayout.Alignment.TRAILING)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(bgButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(outlineColorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(fgButton, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                            .addComponent(paletteSelector, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(useGradient)
-                        .addGroup(effectsPanelLayout.createSequentialGroup()
-                            .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(useAntialiasing)
-                                .addComponent(useOutline, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(widthLabel)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(widthAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(bgButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(outlineColorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(fgButton, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
+                            .addComponent(shColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, effectsPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, effectsPanelLayout.createSequentialGroup()
+                                .addComponent(palLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(paletteSelector, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(useGradient)
+                                .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, effectsPanelLayout.createSequentialGroup()
+                                        .addComponent(useShadow)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(shadowAngleLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(shadowAngleValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, effectsPanelLayout.createSequentialGroup()
+                                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(useAntialiasing)
+                                            .addComponent(useOutline, javax.swing.GroupLayout.Alignment.TRAILING))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(widthLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(widthAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(palettePreview, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        effectsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bgButton, fgButton, outlineColorButton, paletteSelector});
+        effectsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bgButton, fgButton, outlineColorButton, paletteSelector, shColorButton});
 
         effectsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {useAntialiasing, useGradient, useOutline});
 
         effectsPanelLayout.setVerticalGroup(
             effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(effectsPanelLayout.createSequentialGroup()
+                .addComponent(palettePreview, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(effectsPanelLayout.createSequentialGroup()
                 .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(palettePreview, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(effectsPanelLayout.createSequentialGroup()
-                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(fgLabel)
-                            .addComponent(fgButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(bgLabel)
-                            .addComponent(bgButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(outlineLabel)
-                            .addComponent(outlineColorButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(palLabel)
-                            .addComponent(paletteSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(useGradient)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(useOutline)
-                            .addComponent(widthLabel)
-                            .addComponent(widthAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(useAntialiasing)))
-                .addGap(0, 17, Short.MAX_VALUE))
+                    .addComponent(fgLabel)
+                    .addComponent(fgButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bgLabel)
+                    .addComponent(bgButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(outlineLabel)
+                    .addComponent(outlineColorButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(shLabel)
+                    .addComponent(shColorButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(palLabel)
+                    .addComponent(paletteSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(useGradient)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(useOutline)
+                    .addComponent(widthLabel)
+                    .addComponent(widthAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(useAntialiasing)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(effectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(useShadow)
+                    .addComponent(shadowAngleLabel)
+                    .addComponent(shadowAngleValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12))
         );
 
-        effectsPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bgButton, fgButton, outlineColorButton});
+        effectsPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bgButton, fgButton, outlineColorButton, shColorButton});
 
         effectsPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {useAntialiasing, useGradient, useOutline, widthAmount, widthLabel});
 
@@ -720,10 +775,10 @@ public class GUI extends javax.swing.JFrame {
 
         imageZoomLabel.setText("Zoom:");
 
-        imageZoomSlider.setMajorTickSpacing(50);
+        imageZoomSlider.setMajorTickSpacing(10);
         imageZoomSlider.setMaximum(400);
         imageZoomSlider.setMinimum(10);
-        imageZoomSlider.setMinorTickSpacing(10);
+        imageZoomSlider.setSnapToTicks(true);
         imageZoomSlider.setValue(100);
         imageZoomSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -753,7 +808,7 @@ public class GUI extends javax.swing.JFrame {
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(imagePanelLayout.createSequentialGroup()
-                .addComponent(imageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                .addComponent(imageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(imageZoomSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1042,6 +1097,25 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         activateRefresh();
     }//GEN-LAST:event_textMultiplierStateChanged
+
+    private void useShadowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useShadowActionPerformed
+        // TODO add your handling code here:
+        activateRefresh();
+    }//GEN-LAST:event_useShadowActionPerformed
+
+    private void shadowAngleValueStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_shadowAngleValueStateChanged
+        // TODO add your handling code here:
+        activateRefresh();
+    }//GEN-LAST:event_shadowAngleValueStateChanged
+
+    private void shColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shColorButtonActionPerformed
+        // TODO add your handling code here:
+        Color color = JColorChooser.showDialog(this, "Choose Shadow Color", this.guiLogic.getShadowColor());
+        if (color != null) {
+            this.guiLogic.setShadowColor(color);
+        }
+        activateRefresh();
+    }//GEN-LAST:event_shColorButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1352,6 +1426,7 @@ public class GUI extends javax.swing.JFrame {
         fgButton.setBackground(this.guiLogic.getFgColor());
         bgButton.setBackground(this.guiLogic.getBgColor());
         outlineColorButton.setBackground(this.guiLogic.getOutlineColor());
+        shColorButton.setBackground(this.guiLogic.getShadowColor());
     }
 
     // enables or disables components on 3 JPanels depending on operation LOAD/DERIVE
@@ -1417,7 +1492,10 @@ public class GUI extends javax.swing.JFrame {
 
                 icon = this.guiLogic.giveFontDerIcon(guiLogic.getFontFormat().equals("FON1"),
                         fontTestTransparency.isSelected(), useAntialiasing.isSelected(),
-                        useGradient.isSelected(), outlineWidth, (double) textMultiplier.getValue());
+                        useGradient.isSelected(), outlineWidth,
+                        useShadow.isSelected(), (int) shadowAngleValue.getValue(),
+                        (double) textMultiplier.getValue()
+                );
             } else if (this.mode == Operation.LOAD) {
                 setEnabledRegions(false); // disables many features                                 
                 textSample.setText("");
@@ -1516,13 +1594,12 @@ public class GUI extends javax.swing.JFrame {
         URL icon_url = getClass().getResource(RESOURCES_DIR + LICENSE_LOGO_FILE_NAME);
         if (icon_url != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<html><b>VERSION 1.7.4 - VALIUM (PUBLIC BUILD reviewed on 2019-08-31 at 03:00).</b></html>\n");
+            sb.append("<html><b>VERSION 1.7.5 - WARDEN (PUBLIC BUILD reviewed on 2020-01-22 at 02:00).</b></html>\n");
             sb.append("<html><b>This software is free software, </b></html>\n");
             sb.append("<html><b>licensed under GNU General Public License (GPL).</b></html>\n");
             sb.append("\n");
             sb.append("Changelog:\n");
-            sb.append("\t- Fixed antialias bloating of characters when palette is chosen.\n");
-            sb.append("\t- Added multiplier of character cell size.\n");
+            sb.append("\t- New effect feature (from another program) - \"Shadow\". [FireSeraphim]\n");
             sb.append("\n");
             sb.append("Objective:\n");
             sb.append("\tThe purpose of this program is viewing and creating Byte Map and Lump Fonts for \n");
@@ -1600,6 +1677,8 @@ public class GUI extends javax.swing.JFrame {
         this.useOutline.setSelected(false);
         this.useAntialiasing.setSelected(false);
         this.widthAmount.setValue(1);
+        this.useShadow.setSelected(false);
+        this.shadowAngleValue.setValue(45);
         // text reset
         this.textFirstChar.setValue(32);
         this.textLastChar.setValue(127);
@@ -1675,6 +1754,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator separator1;
     private javax.swing.JPopupMenu.Separator separator2;
     private javax.swing.JPopupMenu.Separator separator3;
+    private javax.swing.JButton shColorButton;
+    private javax.swing.JLabel shLabel;
+    private javax.swing.JLabel shadowAngleLabel;
+    private javax.swing.JSpinner shadowAngleValue;
     private javax.swing.JLabel testStrLabel;
     private javax.swing.JTextField testStrTextFld;
     private javax.swing.JSpinner textFirstChar;
@@ -1692,6 +1775,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox useAntialiasing;
     private javax.swing.JCheckBox useGradient;
     private javax.swing.JCheckBox useOutline;
+    private javax.swing.JCheckBox useShadow;
     private javax.swing.JSpinner widthAmount;
     private javax.swing.JLabel widthLabel;
     // End of variables declaration//GEN-END:variables
