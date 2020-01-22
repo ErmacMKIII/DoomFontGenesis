@@ -18,4 +18,7 @@
 - Fixed antialias bloating of characters when palette is chosen.
 - Added multiplier of character cell size.
 
+1.7.5
+- New effect feature (from another program) - "Shadow". [FireSeraphim]
+
 Enjoy using this program! - Ermac
