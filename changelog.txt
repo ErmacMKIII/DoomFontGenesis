@@ -1,24 +1,25 @@
 1.7.0
 - Initial open-source build.
 
-1.7.1
+1.7.1 - STONEWALL
 - Mandatory unused color is set to rose one.
 - User can now view and create lump fonts (Big and Console ones) for Doom.
 - Fixed bug when saving BMF for the loaded BMF font (duplicating).
 
-1.7.2
+1.7.2 - TITANIUM
 - Performance increased as the threads are lightweight.
 - Image zoom added (from 10% to 400%).
 
-1.7.3
+1.7.3 - URANIUM
 - Fixed errors when palette has over 127 colors.
 - Feature to save image that has no palette and lot of colors by using deviation approximation.
 
-1.7.4
+1.7.4 - VALIUM
 - Fixed antialias bloating of characters when palette is chosen.
 - Added multiplier of character cell size.
 
-1.7.5
+1.7.5 - WARDEN
 - New effect feature (from another program) - "Shadow". [FireSeraphim]
-
+- Multiplier is affected when choosing shadow.
+ 
 Enjoy using this program! - Ermac

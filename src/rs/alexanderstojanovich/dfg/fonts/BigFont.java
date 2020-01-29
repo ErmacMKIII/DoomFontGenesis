@@ -132,7 +132,6 @@ public class BigFont extends DoomFont {
                                 this.chars = null;
                                 this.error = true;
                                 this.errorMsg = "Error - Character Overflow!";
-                                System.out.println("len = " + len + " numpixels = " + numpixels);
                                 return;
                             }
                             System.arraycopy(buffer, pos, this.chars[i].getData(), e, len);
@@ -146,7 +145,6 @@ public class BigFont extends DoomFont {
                                 this.chars = null;
                                 this.error = true;
                                 this.errorMsg = "Error - Character Overflow!";
-                                System.out.println("len = " + len + " numpixels = " + numpixels);
                                 return;
                             }
                             code = buffer[pos++];

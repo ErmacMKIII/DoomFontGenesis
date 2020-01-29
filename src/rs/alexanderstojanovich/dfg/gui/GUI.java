@@ -1594,12 +1594,13 @@ public class GUI extends javax.swing.JFrame {
         URL icon_url = getClass().getResource(RESOURCES_DIR + LICENSE_LOGO_FILE_NAME);
         if (icon_url != null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("<html><b>VERSION 1.7.5 - WARDEN (PUBLIC BUILD reviewed on 2020-01-22 at 02:00).</b></html>\n");
+            sb.append("<html><b>VERSION 1.7.5 - WARDEN (PUBLIC BUILD reviewed on 2020-01-29 at 18:00).</b></html>\n");
             sb.append("<html><b>This software is free software, </b></html>\n");
             sb.append("<html><b>licensed under GNU General Public License (GPL).</b></html>\n");
             sb.append("\n");
             sb.append("Changelog:\n");
             sb.append("\t- New effect feature (from another program) - \"Shadow\". [FireSeraphim]\n");
+            sb.append("\t- Multiplier is affected when choosing shadow.\n");
             sb.append("\n");
             sb.append("Objective:\n");
             sb.append("\tThe purpose of this program is viewing and creating Byte Map and Lump Fonts for \n");

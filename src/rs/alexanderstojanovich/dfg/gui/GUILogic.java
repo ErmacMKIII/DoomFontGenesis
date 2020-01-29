@@ -214,7 +214,13 @@ public class GUILogic {
         ImageIcon imageIcon = null;
         if (myFont != null && myText != null) {
             // define sampler
-            final double sampler = 2.0 * multiplier * outlineWidth;
+            double sampler = multiplier;
+            if (outlineWidth > 0) {
+                sampler *= 2.0 * outlineWidth;
+            }
+            if (shadow) {
+                sampler *= 2.0;
+            }
             // create the FontRenderContext object which helps us to measure the text             
             FontRenderContext frc = new FontRenderContext(null, antialiasing, true);
             Rectangle2D maxCharBounds = maxStrBounds(myFont, frc, myText);
