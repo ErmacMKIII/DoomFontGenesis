@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2019 Coa
+/* 
+ * Copyright (C) 2020 Alexander Stojanovich <coas91@rocketmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 
 /**
  *
- * @author Coa
+ * @author Alexander Stojanovich <coas91@rocketmail.com>
  */
 public class BMF extends DoomFont {
 
